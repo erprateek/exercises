@@ -31,38 +31,36 @@ def wordCounts(filename):
 	return sorted_freqs,sorted_freqs2
 	#return "Real word", tfidf_word, "Unreal word", cv_word
 
+import nltk
+from nltk.collocations import *
+
 def typesOfGuitar(filename, list_guitar_types):
-	"""Generate bigrams
-	for all the indices where guitar occurs, get previos index and add the word if its not not useful.
-	"""
 	"""Should generalize by the type of subject searched for
 		Instead of hard coding guitar
 	"""
-	"""Remove the cv words category by the end"""
-	"""More specific can be made by making it a 3 gram and analyzing what follows
-		Should incorporate collocation in nltk. That might help in finding frequencies of the terms occurring more than once.
-	"""
-	"""should supply deals only containing guitars"""
-
-	import sklearn.feature_extraction.text
 	from nltk import pos_tag
 	deals = open(filename).readlines()
-	ngram_tfidf = sklearn.feature_extraction.text.TfidfVectorizer(ngram_range=(2, 2))
-	ngram_tfidf_matrix = ngram_tfidf.fit_transform(deals)
-	bigrams = ngram_tfidf.vocabulary_.keys()
+	guit_list = [sen for sen in deals if u"guitar" in sen.lower()]
+	join_guit_list = " & ".join(guit_list)
+	bigram_measures = nltk.collocations.BigramAssocMeasures()
+	finder = BigramCollocationFinder.from_words(nltk.word_tokenize(join_guit_list))
+	stopwords = nltk.corpus.stopwords.words('english')
+	finder.apply_word_filter(lambda w: w in stopwords)
+	finder.apply_freq_filter(2)
+	scored = finder.score_ngrams(bigram_measures.raw_freq)
+	sorted_scores = sorted(bigram for bigram, score in scored)
+	join_sorted_scores = []
 	types = set()
-	for word in bigrams:
-		if u"guitar" in word:
-			[first,second] = word.split()
-			if u"guitar" in second:
-            	#print word
-				first_tag,second_tag = pos_tag(word.split())
-				cur_word, pos = first_tag
-				if pos in ['JJ']:
-					types.add(cur_word)
-	if list_guitar_types:
-		set_guitar_types = set(list_guitar_types)
-		types.intersection_update(set_guitar_types)
+	for cur_tuple in sorted_scores:
+		first_word = cur_tuple[0]
+		second_word = cur_tuple[1]
+		join_sorted_scores.append(first_word+" "+second_word)
+	for word in join_sorted_scores:
+		(first,second) = word.lower().split()
+		first_tag, second_tag = pos_tag(word.lower().split())
+		word, tag = first_tag
+		if u'guitar' in second and tag in 'JJ':
+			types.add(word)
 	return (types, len(types))
 
 def main():
