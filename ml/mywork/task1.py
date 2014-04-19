@@ -36,8 +36,8 @@ def typesOFGuitar()
 def main():
 	filename = "deals.txt"
 	(tfidfWords, cvWords) = wordCounts(filename)
-	max_words = tfidfWords[0]
-	min_words = tfidfWords[-1]
+	max_word = tfidfWords[0]
+	min_word = tfidfWords[-1]
 	
 if __name__ == '__main__':
 	main()
