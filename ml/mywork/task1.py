@@ -10,34 +10,21 @@ we want to glean the following insights:
 3. How many types of guitars are mentioned across all the deals?
 
 """
-
-
-def wordCounts(filename):
-	import sklearn.feature_extraction.text
-	import nltk
-	raw_data = open(filename).readlines()
-	cv = sklearn.feature_extraction.text.CountVectorizer()
-	stopwords = nltk.corpus.stopwords.words('english')
-	tfidfv = sklearn.feature_extraction.text.TfidfVectorizer(stop_words = stopwords)
-	cv_matrix = cv.fit_transform(raw_data)
-	tfidf_matrix = tfidfv.fit_transform(raw_data)
-	freqs = [(word, tfidf_matrix.getcol(idx).sum()) for word, idx in tfidfv.vocabulary_.items()]
-	freqs2 = [(word, cv_matrix.getcol(idx).sum()) for word, idx in cv.vocabulary_.items()]
-	sorted_freqs = sorted (freqs, key = lambda x: -x[1])
-	sorted_freqs2 = sorted (freqs2, key = lambda x: -x[1])
-	"""
-	Consider adding filter words since it is online deals so words such as Online, .com, link are avoided
-	"""
-	return sorted_freqs,sorted_freqs2
-	#return "Real word", tfidf_word, "Unreal word", cv_word
-
 import nltk
 from nltk.collocations import *
 
+def wordCounts(filename):
+	import sklearn.feature_extraction.text
+	raw_data = open(filename).readlines()
+	ignore_words_list = open("ignore_words.txt").read().split()
+	stopwords = nltk.corpus.stopwords.words('english')+ignore_words_list
+	tfidfv = sklearn.feature_extraction.text.TfidfVectorizer(stop_words = stopwords)
+	tfidf_matrix = tfidfv.fit_transform(raw_data)
+	freqs = [(word, tfidf_matrix.getcol(idx).sum()) for word, idx in tfidfv.vocabulary_.items()]
+	sorted_freqs = sorted (freqs, key = lambda x: -x[1])
+	return sorted_freqs,sorted_freqs2
+
 def typesOfGuitar(filename, list_guitar_types):
-	"""Should generalize by the type of subject searched for
-		Instead of hard coding guitar
-	"""
 	from nltk import pos_tag
 	deals = open(filename).readlines()
 	guit_list = [sen for sen in deals if u"guitar" in sen.lower()]
