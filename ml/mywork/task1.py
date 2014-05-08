@@ -11,22 +11,20 @@ we want to glean the following insights:
 
 """
 import nltk
-from nltk.collocations import *
+from nltk.collocations import BigramAssocMeasures, BigramCollocationFinder
 
-def wordCounts(filename):
+def wordCounts(raw_data):
 	import sklearn.feature_extraction.text
-	raw_data = open(filename).readlines()
-	ignore_words_list = open("ignore_words.txt").read().split()
-	stopwords = nltk.corpus.stopwords.words('english')+ignore_words_list
+	#ignore_words_list = open("ignore_words.txt").read().split()
+	stopwords = nltk.corpus.stopwords.words('english')#+ignore_words_list
 	tfidfv = sklearn.feature_extraction.text.TfidfVectorizer(stop_words = stopwords)
 	tfidf_matrix = tfidfv.fit_transform(raw_data)
 	freqs = [(word, tfidf_matrix.getcol(idx).sum()) for word, idx in tfidfv.vocabulary_.items()]
 	sorted_freqs = sorted (freqs, key = lambda x: -x[1])
-	return sorted_freqs,sorted_freqs2
+	return sorted_freqs
 
-def typesOfGuitar(filename, list_guitar_types):
+def typesOfGuitar(deals):
 	from nltk import pos_tag
-	deals = open(filename).readlines()
 	guit_list = [sen for sen in deals if u"guitar" in sen.lower()]
 	join_guit_list = " & ".join(guit_list)
 	bigram_measures = nltk.collocations.BigramAssocMeasures()
@@ -55,10 +53,11 @@ def main():
 	filename = "deals.txt"
 	path = "../data/"+filename
 	"""path describes where the corpus is located"""
-	(tfidfWords, cvWords) = wordCounts(path)
+	raw_data = open(path).readlines()
+	tfidfWords = wordCounts(raw_data)
 	max_term, max_count = tfidfWords[0]
 	min_term, min_count = tfidfWords[-1]
-	(guitar_types, num_guitar_types) = typesOfGuitar(path, [])
+	(guitar_types, num_guitar_types) = typesOfGuitar(raw_data)
 	print "Most common term in the deals", max_term
 	print "Least common term in the deals", min_term
 	print guitar_types, num_guitar_types
