@@ -7,9 +7,20 @@ import unittest
 from mywork.task3 import *
 
 class Test(unittest.TestCase):
-
-
-    def testName(self):
+    
+    def setUp(self):
+        pass
+        
+    def testClassify(self):
+        pass
+    
+    def testPopulate_datasets(self):
+        pass
+    
+    def testCrossvalidate(self):
+        pass
+    
+    def testFeatureExtractor(self):
         pass
 
 

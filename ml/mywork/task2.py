@@ -8,6 +8,16 @@ Building on task 1, we now want to start to understand the relationships to help
 2. What topics exist within the deals?
 
 """
+### SOLUTION - TASK 2
+
+# Since the list of groups and topics is much bigger
+# To run, do
+# >>> from task2 import *
+# >>> find_groups()
+
+# One way to improve this but has not been incorporated would be stemming
+# But that introduces the problem of identifying whether the stemmed words
+# belong to a particular part of speech or not
 
 import nltk
 import sklearn.feature_extraction.text
@@ -15,7 +25,6 @@ from sklearn import cluster
 from collections import Counter
 from nltk.corpus import wordnet as wn
 from nltk import pos_tag
-from task1 import wordCounts
 from nltk.collocations import BigramAssocMeasures, BigramCollocationFinder
 import itertools
 

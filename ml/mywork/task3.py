@@ -16,14 +16,23 @@ Also, provide comments on:
 """
 import nltk
 from sklearn.naive_bayes import GaussianNB
+from sklearn.naive_bayes import MultinomialNB
 from sklearn import metrics
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn import cross_validation
-
+from sklearn.linear_model import Perceptron, sgd_fast
+from sklearn.linear_model import SGDClassifier
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.svm import LinearSVC
 
 def classify(X_train, Y_train, X_test):
     """Classification step takes place here using NaiveBayes"""
     clf = GaussianNB()
+    #clf = Perceptron()
+    #clf = SGDClassifier()
+    #clf = MultinomialNB()
+    #clf = KNeighborsClassifier()
+    #clf = LinearSVC()
     clf.fit(X_train.toarray(), Y_train)
     Y_pred = clf.predict(X_test.toarray())
     return Y_pred
@@ -69,14 +78,22 @@ def crossvalidate(X_trn, Y_trn):
     dumb_labels2 = Y_test.copy()
     dumb_labels1[dumb_labels1 == 0] = 1;    #Labels all 1s
     dumb_labels2[dumb_labels2 == 1] = 0;    #Labels all 0s
+    dumb_labels3 = np.random.randint(2, size=(len(Y_test),))
     clf = GaussianNB()
+    #clf = Perceptron()
+    #clf = SGDClassifier()
+    #clf = MultinomialNB()
+    #clf = KNeighborsClassifier()
+    #clf = LinearSVC()
     clf.fit(X_train, Y_train)
     accuracy = clf.score(X_test, Y_test)
     dumb_clf1_score = clf.score(X_test, dumb_labels1)
     dumb_clf2_score = clf.score(X_test, dumb_labels2)
+    dumb_clf3_score = clf.score(X_test, dumb_labels3)
     print "Classifier Score : ", accuracy
     print "Dumb_classifier with all 1s : ", dumb_clf1_score
     print "Dumb classifier with all 0s : ", dumb_clf2_score
+    print "Dumb classifier with random sequence : ", dumb_clf3_score
     return accuracy
 
 def main():
