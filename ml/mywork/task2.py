@@ -200,7 +200,7 @@ def ignoreWordsList(ignore_words_list):
     for word in ignore_words_list:
         li = wn.synsets(word)
         for ss in li:
-            syns.append(ss.lemma_names)
+            syns.append(ss.lemma_names())
     all_ignore = []
     for wlist in syns:
         all_ignore.extend(wlist)
